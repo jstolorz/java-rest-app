@@ -26,8 +26,14 @@ dependencies {
     compile group: 'org.hibernate', name: 'hibernate-c3p0', version: '5.2.12.Final'
     // https://mvnrepository.com/artifact/org.hibernate/hibernate-entitymanager
     compile group: 'org.hibernate', name: 'hibernate-entitymanager', version: '4.3.1.Final'
+
     // https://mvnrepository.com/artifact/mysql/mysql-connector-java
-    compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.46'
+    //compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.46'
+
+    // https://mvnrepository.com/artifact/mysql/mysql-connector-java
+    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.11'
+
+
     // https://mvnrepository.com/artifact/org.springframework/spring-beans
     compile group: 'org.springframework', name: 'spring-beans', version: '4.3.7.RELEASE'
     // https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-ses
