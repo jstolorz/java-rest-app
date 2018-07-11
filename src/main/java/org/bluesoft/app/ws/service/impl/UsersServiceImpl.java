@@ -1,6 +1,7 @@
 package org.bluesoft.app.ws.service.impl;
 
 import org.bluesoft.app.ws.exceptions.CouldNotCreateRecordException;
+import org.bluesoft.app.ws.exceptions.NoRecordFoundException;
 import org.bluesoft.app.ws.io.dao.DAO;
 import org.bluesoft.app.ws.io.dao.impl.MySQLDAO;
 import org.bluesoft.app.ws.service.UsersService;
@@ -53,7 +54,23 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public UserDTO getUser(String id) {
-        return null;
+
+        UserDTO dto = null;
+
+        try {
+
+            this.database.openConnection();
+            dto = this.database.getUser(id);
+
+        }catch (Exception ex)
+        {
+            ex.printStackTrace();
+            throw new NoRecordFoundException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+        }finally {
+            this.database.closeConnection();
+        }
+
+        return dto;
     }
 
     @Override
