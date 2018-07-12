@@ -1,5 +1,6 @@
 package org.bluesoft.app.ws.ui.entrypoints;
 
+import org.bluesoft.app.ws.annotations.Secured;
 import org.bluesoft.app.ws.service.UsersService;
 import org.bluesoft.app.ws.service.impl.UsersServiceImpl;
 import org.bluesoft.app.ws.shared.dto.UserDTO;
@@ -32,6 +33,7 @@ public class UsersEntryPoint {
         return profileRest;
     }
 
+    @Secured
     @GET
     @Path("/{id}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})

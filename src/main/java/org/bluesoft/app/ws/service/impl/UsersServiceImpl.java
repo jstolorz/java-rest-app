@@ -43,7 +43,7 @@ public class UsersServiceImpl implements UsersService {
         String encodedPassword = profileUtils.generateSecurePassword(user.getPassword(), salt);
         user.setSalt(salt);
         user.setEncryptedPassword(encodedPassword);
-        user.setEmailVerificationStatus(false);
+        user.setEmailVerificationStatus(true);
         user.setEmailVerificationToken(profileUtils.generateEmailverificationToken(30));
 
         returnValue = this.saveUser(user);
