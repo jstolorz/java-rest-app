@@ -11,6 +11,8 @@ import org.springframework.beans.BeanUtils;
 import javax.json.JsonObject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Path("/users")
@@ -46,6 +48,26 @@ public class UsersEntryPoint {
         returnValue = new UserProfileRest();
 
         BeanUtils.copyProperties(userDTO, returnValue);
+
+        return returnValue;
+    }
+
+    @GET
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public List<UserProfileRest> getUsers(@DefaultValue("0") @QueryParam("start") int start,
+                                          @DefaultValue("50") @QueryParam("limit") int limit){
+        List<UserProfileRest> returnValue = new ArrayList<>();
+        UsersService service = new UsersServiceImpl();
+
+        List<UserDTO> users = service.getUsers(start,limit);
+
+        for (UserDTO userDTO : users) {
+            UserProfileRest profileRest = new UserProfileRest();
+            BeanUtils.copyProperties(userDTO, profileRest);
+            profileRest.setHref("/users/" + userDTO.getUserId());
+            returnValue.add(profileRest);
+        }
+
 
         return returnValue;
     }
