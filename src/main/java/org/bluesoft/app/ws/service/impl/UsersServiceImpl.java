@@ -1,6 +1,8 @@
 package org.bluesoft.app.ws.service.impl;
 
 import org.bluesoft.app.ws.exceptions.CouldNotCreateRecordException;
+import org.bluesoft.app.ws.exceptions.CouldNotDeleteRecordException;
+import org.bluesoft.app.ws.exceptions.CouldNotUpdateRecordException;
 import org.bluesoft.app.ws.exceptions.NoRecordFoundException;
 import org.bluesoft.app.ws.io.dao.DAO;
 import org.bluesoft.app.ws.io.dao.impl.MySQLDAO;
@@ -109,10 +111,38 @@ public class UsersServiceImpl implements UsersService {
     @Override
     public void updateUserDetails(UserDTO userDetails) {
 
+        try{
+            database.openConnection();
+            database.updateUser(userDetails);
+        }catch (Exception ex){
+            throw new CouldNotUpdateRecordException(ex.getMessage());
+        }finally {
+            database.closeConnection();
+        }
+
     }
 
     @Override
     public void deleteUser(UserDTO userDto) {
+        try{
+            database.openConnection();
+            database.deleteUser(userDto);
+        }catch (Exception ex){
+            throw new CouldNotDeleteRecordException(ex.getMessage());
+        }finally {
+            database.closeConnection();
+        }
+
+        try{
+            userDto = getUser(userDto.getUserId());
+        }catch (NoRecordFoundException ex){
+            userDto = null;
+        }
+
+        if(userDto != null){
+            throw new CouldNotDeleteRecordException(
+                    ErrorMessages.COULD_NOT_DELETE_RECORD.getErrorMessage());
+        }
 
     }
 

@@ -5,6 +5,10 @@ import org.bluesoft.app.ws.service.UsersService;
 import org.bluesoft.app.ws.service.impl.UsersServiceImpl;
 import org.bluesoft.app.ws.shared.dto.UserDTO;
 import org.bluesoft.app.ws.ui.model.request.CreateUserRequestModel;
+import org.bluesoft.app.ws.ui.model.request.UpdateUserRequestModel;
+import org.bluesoft.app.ws.ui.model.response.DeleteUserProfileResponseModel;
+import org.bluesoft.app.ws.ui.model.response.RequestOperation;
+import org.bluesoft.app.ws.ui.model.response.ResponseStatus;
 import org.bluesoft.app.ws.ui.model.response.UserProfileRest;
 import org.springframework.beans.BeanUtils;
 
@@ -71,4 +75,50 @@ public class UsersEntryPoint {
 
         return returnValue;
     }
+
+    @PUT
+    @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public UserProfileRest updateUserDetails(@PathParam("id") String id,
+                                             UpdateUserRequestModel model){
+
+        UsersService service = new UsersServiceImpl();
+        UserDTO user = service.getUser(id);
+
+        if(model.getFirstName() != null && !model.getFirstName().isEmpty()){
+            user.setFirstName(model.getFirstName());
+        }
+
+        if(model.getLastName() != null && !model.getLastName().isEmpty()){
+            user.setLastName(model.getLastName());
+        }
+
+        service.updateUserDetails(user);
+
+        UserProfileRest profileRest = new UserProfileRest();
+        BeanUtils.copyProperties(user, profileRest);
+
+        return profileRest;
+    }
+
+    @DELETE
+    @Path("/{id}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public DeleteUserProfileResponseModel deleteUserProfile(@PathParam("id") String id){
+
+        DeleteUserProfileResponseModel model = new DeleteUserProfileResponseModel();
+        model.setRequestOperation(RequestOperation.DELETE);
+
+        UsersService service = new UsersServiceImpl();
+        UserDTO user = service.getUser(id);
+
+        service.deleteUser(user);
+
+        model.setResponseStatus(ResponseStatus.SUCCESS);
+
+        return model;
+    }
+
+
 }
