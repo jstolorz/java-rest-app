@@ -17,12 +17,16 @@ import java.util.logging.Logger;
 
 public class AuthenticationServiceImpl implements AuthenticationService {
 
+    private UsersService usersService;
     private DAO database;
+
+    public AuthenticationServiceImpl(UsersService usersService) {
+        this.usersService = usersService;
+    }
 
     @Override
     public UserDTO authenticate(String userName, String password) throws AuthenticationException {
 
-        UsersService usersService = new UsersServiceImpl();
         UserDTO storedUser = usersService.getUserByUserName(userName);
 
         if(storedUser == null){

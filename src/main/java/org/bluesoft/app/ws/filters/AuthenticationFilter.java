@@ -5,6 +5,7 @@ import org.bluesoft.app.ws.service.UsersService;
 import org.bluesoft.app.ws.service.impl.UsersServiceImpl;
 import org.bluesoft.app.ws.shared.dto.UserDTO;
 import org.bluesoft.app.ws.utils.UserProfileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Priority;
 import javax.security.sasl.AuthenticationException;
@@ -24,6 +25,9 @@ import java.util.logging.Logger;
 @Priority(Priorities.AUTHENTICATION)
 public class AuthenticationFilter implements ContainerRequestFilter {
 
+    @Autowired
+    UsersService service;
+
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
          String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
@@ -40,7 +44,6 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
     private void validateToken(String token, String userId) throws AuthenticationException {
 
-        UsersService service = new UsersServiceImpl();
         UserDTO userDTO = service.getUser(userId);
 
         String completeToken = userDTO.getToken() + token;

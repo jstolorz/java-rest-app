@@ -11,8 +11,9 @@ import org.bluesoft.app.ws.ui.model.response.RequestOperation;
 import org.bluesoft.app.ws.ui.model.response.ResponseStatus;
 import org.bluesoft.app.ws.ui.model.response.UserProfileRest;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.json.JsonObject;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
@@ -21,6 +22,9 @@ import java.util.List;
 
 @Path("/users")
 public class UsersEntryPoint {
+
+    @Autowired
+    UsersService userService;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -31,8 +35,8 @@ public class UsersEntryPoint {
         UserDTO userDTO = new UserDTO();
         BeanUtils.copyProperties(requestModel,userDTO);
 
-        UsersService usersService = new UsersServiceImpl();
-        UserDTO createdUserProfile = usersService.createUser(userDTO);
+
+        UserDTO createdUserProfile = userService.createUser(userDTO);
 
         BeanUtils.copyProperties(createdUserProfile, profileRest);
 
@@ -46,8 +50,8 @@ public class UsersEntryPoint {
     public UserProfileRest getUserProfile(@PathParam("id") String id){
         UserProfileRest returnValue = null;
 
-        UsersService service = new UsersServiceImpl();
-        UserDTO userDTO = service.getUser(id);
+
+        UserDTO userDTO = userService.getUser(id);
 
         returnValue = new UserProfileRest();
 
@@ -61,9 +65,9 @@ public class UsersEntryPoint {
     public List<UserProfileRest> getUsers(@DefaultValue("0") @QueryParam("start") int start,
                                           @DefaultValue("50") @QueryParam("limit") int limit){
         List<UserProfileRest> returnValue = new ArrayList<>();
-        UsersService service = new UsersServiceImpl();
 
-        List<UserDTO> users = service.getUsers(start,limit);
+
+        List<UserDTO> users = userService.getUsers(start,limit);
 
         for (UserDTO userDTO : users) {
             UserProfileRest profileRest = new UserProfileRest();
@@ -83,8 +87,8 @@ public class UsersEntryPoint {
     public UserProfileRest updateUserDetails(@PathParam("id") String id,
                                              UpdateUserRequestModel model){
 
-        UsersService service = new UsersServiceImpl();
-        UserDTO user = service.getUser(id);
+
+        UserDTO user = userService.getUser(id);
 
         if(model.getFirstName() != null && !model.getFirstName().isEmpty()){
             user.setFirstName(model.getFirstName());
@@ -94,7 +98,7 @@ public class UsersEntryPoint {
             user.setLastName(model.getLastName());
         }
 
-        service.updateUserDetails(user);
+        userService.updateUserDetails(user);
 
         UserProfileRest profileRest = new UserProfileRest();
         BeanUtils.copyProperties(user, profileRest);
@@ -110,10 +114,9 @@ public class UsersEntryPoint {
         DeleteUserProfileResponseModel model = new DeleteUserProfileResponseModel();
         model.setRequestOperation(RequestOperation.DELETE);
 
-        UsersService service = new UsersServiceImpl();
-        UserDTO user = service.getUser(id);
+        UserDTO user = userService.getUser(id);
 
-        service.deleteUser(user);
+        userService.deleteUser(user);
 
         model.setResponseStatus(ResponseStatus.SUCCESS);
 
